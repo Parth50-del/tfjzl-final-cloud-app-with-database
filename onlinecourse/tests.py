@@ -30,6 +30,21 @@ class QuestionModelTests(TestCase):
             choice_text='Incorrect',
         )
 
+    def test_quiz_field_definitions(self):
+        question_text = Question._meta.get_field('question_text')
+        grade = Question._meta.get_field('grade')
+        choice_text = Choice._meta.get_field('choice_text')
+        is_correct = Choice._meta.get_field('is_correct')
+
+        self.assertEqual(question_text.get_internal_type(), 'CharField')
+        self.assertEqual(question_text.max_length, 200)
+        self.assertEqual(grade.get_internal_type(), 'IntegerField')
+        self.assertEqual(grade.default, 0)
+        self.assertEqual(choice_text.get_internal_type(), 'CharField')
+        self.assertEqual(choice_text.max_length, 200)
+        self.assertEqual(is_correct.get_internal_type(), 'BooleanField')
+        self.assertFalse(is_correct.default)
+
     def test_is_get_score_requires_exact_correct_choices(self):
         self.assertTrue(self.question.is_get_score([self.correct_choice.id]))
         self.assertFalse(self.question.is_get_score([self.incorrect_choice.id]))
